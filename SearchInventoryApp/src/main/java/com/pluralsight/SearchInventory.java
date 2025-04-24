@@ -1,6 +1,8 @@
 package com.pluralsight;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.File;
 
 public class SearchInventory {
     public static void main(String[] args) {
@@ -16,14 +18,32 @@ public class SearchInventory {
     // Method to build the product list
     public static ArrayList<Product> getInventory() {
         ArrayList<Product> inventory = new ArrayList<>();
+        try {
+            File file = new File("src/main/resources/inventory.csv");
+            Scanner scanner = new Scanner (file);
 
-        inventory.add(new Product(27099, "Water", 19.99));
-        inventory.add(new Product(10309, "Ramen", 9.99));
-        inventory.add(new Product(23450, "Box of nails", 9.29));
-        inventory.add(new Product(34562, "Dave's Food", 14.75));
-        inventory.add(new Product(27898, "Laptop", 100.89));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split("\\|");
 
+                if (parts.length == 3) {
+                    int id = Integer .parseInt(parts [0]);
+                    String name = parts [1];
+                    double price = Double.parseDouble(parts[2]);
+
+                    Product product = new Product(id, name, price);
+                    inventory.add(product);
+                }
+
+            }
+            scanner.close();
+
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
         return inventory;
+
+        }
+
     }
-}
 
